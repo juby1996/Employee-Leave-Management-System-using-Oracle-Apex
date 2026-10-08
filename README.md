@@ -267,37 +267,12 @@ than duplicating role/identity lookups in each page or query.
 
 ---
 
-## 7. Known Limitations
-
-Documented honestly rather than hidden — these are open items, not
-oversights:
-
-- **Double-submission race condition:** two rapid submits of the same
-  leave request can both pass validation before either commits, creating
-  duplicate rows. A fix (disable-on-click, or `SELECT ... FOR UPDATE`
-  locking in `CREATE_LEAVE`) was identified but not yet implemented.
-- **Sufficient Balance validation:** a page-level validation for this was
-  attempted but not completed; balance is currently enforced only inside
-  `PKG_LEAVE.CREATE_LEAVE` itself, not shown to the user before submit.
-- **Delete-confirmation regression (Departments master page):** the
-  confirmation dialog displays, but the delete no longer executes after a
-  later change; root cause not yet isolated.
-- **Highlight-invalid-fields styling:** a planned visual cue for invalid
-  grid cells did not take effect; left as a cosmetic gap.
-
-See `DEBUGGING.md` and `PERFORMANCE.md` for the issues that *were* found
-and resolved, with full root-cause analysis.
-
----
-
 ## 8. Screenshots
 
-
-- `screenshots/dashboard.png`
-- `screenshots/apply-leave.png`
-- `screenshots/leave-approvals.png`
-- `screenshots/hr-grid.png`
-
+![Dashboard](screenshots/dashboard.png)
+![Apply Leave](screenshots/apply-leave.png)
+![Leave Approvals](screenshots/leave-approvals.png)
+![HR Employee Update](screenshots/hr-grid.png)
 ---
 
 ## Related Documents
