@@ -186,7 +186,7 @@ function-based index added to support `UPPER(STATUS)` filtering.
 **Authorization Schemes:**
 | Scheme | Rule |
 |---|---|
-| Can Approve Leave | `GET_CURRENT_USER_ROLE() IN ('MANAGER','ADMIN')` |
+| Can Approve Leave | `GET_CURRENT_USER_ROLE() IN ('MANAGER','HR')` |
 | Admin Only | `GET_CURRENT_USER_ROLE() = 'ADMIN'` |
 
 ---
@@ -216,7 +216,7 @@ Security is enforced at three layers, not just one — a login role check
 alone wouldn't stop a user from reaching a page by URL or reading another
 employee's rows through a report.
 
-**Page-level (can they open it at all):**
+**Page-level :**
 - Role-based Authorization Schemes attached directly to pages — e.g. HR
   Employee Update and the Master Pages are restricted to HR/Admin;
   Leave Approvals and the Decision modal to Manager/Admin.
@@ -292,7 +292,7 @@ and resolved, with full root-cause analysis.
 
 ## 8. Screenshots
 
-*Add screenshots here before publishing — e.g.:*
+
 - `screenshots/dashboard.png`
 - `screenshots/apply-leave.png`
 - `screenshots/leave-approvals.png`
@@ -302,5 +302,4 @@ and resolved, with full root-cause analysis.
 
 ## Related Documents
 
-- [`DEBUGGING.md`](./DEBUGGING.md) — four real bugs found and fixed, one per required category.
 - [`PERFORMANCE.md`](./PERFORMANCE.md) — index review and an EXPLAIN PLAN-driven fix.
