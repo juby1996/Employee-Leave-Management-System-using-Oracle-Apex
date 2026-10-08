@@ -269,9 +269,9 @@ than duplicating role/identity lookups in each page or query.
 
 ## 8. Screenshots
 
-![Dashboard](screenshots/dashboard.png)
-![Apply Leave](screenshots/apply-leave.png)
-![Leave Approvals](screenshots/leave-approvals.png)
+![Dashboard](screenshots/dashboard (2).png)
+![Apply Leave](screenshots/apply-leave.png) 
+![Leave Approvals](screenshots/leave-approvals.png) 
 ![HR Employee Update](screenshots/hr-grid.png)
 ---
 
