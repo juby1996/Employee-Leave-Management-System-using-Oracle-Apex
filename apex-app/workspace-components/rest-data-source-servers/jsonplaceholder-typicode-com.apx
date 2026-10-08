@@ -1,0 +1,7 @@
+restDataSourceServer jsonplaceholder-typicode-com (
+    name: jsonplaceholder-typicode-com
+    endpointUrl {
+        url: https://jsonplaceholder.typicode.com/
+    }
+)
+

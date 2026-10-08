@@ -1,0 +1,12 @@
+lov departments-dept-name (
+    name: DEPARTMENTS.DEPT_NAME
+    source {
+        tableName: DEPARTMENTS
+    }
+    columnMapping {
+        return: DEPT_ID
+        display: DEPT_NAME
+        defaultSort: DEPT_NAME
+    }
+)
+

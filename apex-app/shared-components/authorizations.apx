@@ -1,0 +1,69 @@
+authorization admin-only (
+    name: Admin Only
+    type: plSqlFunctionBody
+    settings {
+        plsqlFunctionBody: RETURN GET_CURRENT_USER_ROLE() = 'ADMIN';
+    }
+    advanced {
+        evaluationType: perSession
+    }
+)
+
+authorization administration-rights (
+    name: Administration Rights
+    type: plSqlFunctionBody
+    settings {
+        plsqlFunctionBody: return true;
+    }
+    error {
+        errorMessage: Insufficient privileges, user is not an Administrator
+    }
+)
+
+authorization can-approve-leave (
+    name: Can Approve Leave
+    type: plSqlFunctionBody
+    settings {
+        plsqlFunctionBody: RETURN GET_CURRENT_USER_ROLE() IN ('MANAGER', 'HR');
+    }
+    advanced {
+        evaluationType: perSession
+    }
+)
+
+authorization is-hr-or-admin (
+    name: Is HR or Admin
+    type: plSqlFunctionBody
+    settings {
+        plsqlFunctionBody: RETURN GET_CURRENT_USER_ROLE() IN ('HR','ADMIN');
+    }
+    advanced {
+        evaluationType: perSession
+    }
+)
+
+authorization is-hr-or-admin-or-manager (
+    name: Is HR or Admin or Manager
+    type: plSqlFunctionBody
+    settings {
+        plsqlFunctionBody: RETURN GET_CURRENT_USER_ROLE() IN ('HR','ADMIN','MANAGER');
+    }
+    error {
+        errorMessage: RETURN GET_CURRENT_USER_ROLE() IN ('HR','ADMIN','MANAGER');
+    }
+    advanced {
+        evaluationType: perSession
+    }
+)
+
+authorization not-hr (
+    name: Not HR
+    type: plSqlFunctionBody
+    settings {
+        plsqlFunctionBody: RETURN GET_CURRENT_USER_ROLE() != 'HR';
+    }
+    advanced {
+        evaluationType: perSession
+    }
+)
+

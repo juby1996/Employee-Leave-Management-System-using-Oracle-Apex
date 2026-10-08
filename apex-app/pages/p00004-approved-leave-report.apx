@@ -1,0 +1,301 @@
+page 4 (
+    name: Approved Leave Report
+    alias: APPROVED-LEAVE-REPORT
+    title: Approved Leave Report
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+
+    region approved-leave-report (
+        name: Approved Leave Report
+        type: interactiveReport
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                SELECT lr.REQUEST_ID,
+                       e.EMP_NAME,
+                       lt.TYPE_NAME,
+                       TO_CHAR(lr.FROM_DATE, 'DD-MM-YYYY') AS FROM_DATE,
+                       TO_CHAR(lr.TO_DATE, 'DD-MM-YYYY') AS TO_DATE,
+                       lr.TOTAL_DAYS,
+                       lr.REASON,
+                       lr.STATUS,
+                       lr.MANAGER_REMARK,
+                       TO_CHAR(lr.CREATED_DATE, 'DD-MM-YYYY') AS CREATED_DATE
+                FROM   EMPLOYEES e
+                JOIN   LEAVE_REQUESTS lr ON e.EMP_ID = lr.EMP_ID
+                JOIN   LEAVE_TYPES lt ON lr.TYPE_ID = lt.TYPE_ID
+                WHERE  lr.STATUS = 'APPROVED' AND (
+                    GET_CURRENT_USER_ROLE() IN ('HR','ADMIN','MANAGER')
+                    OR e.EMP_ID = GET_CURRENT_EMP_ID()
+                )
+                ORDER BY lr.FROM_DATE DESC
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/interactive-report
+            templateOptions: [
+                #DEFAULT#
+                t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        pagination {
+            type: rowRangesXToY
+        }
+        messages {
+            whenNoDataFound: No data found.
+            whenMoreDataFound: The maximum row count for this report is #MAX_ROW_COUNT# rows.  Please apply a filter to reduce the number of records in your query.
+        }
+        advanced {
+            savedReportMappingIdentifier: 33646873653045463860
+        }
+
+        column CREATED_DATE (
+            type: plainText
+            heading {
+                heading: Created Date
+            }
+            layout {
+                sequence: 10
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: J
+            }
+        )
+
+        column EMP_NAME (
+            type: plainText
+            heading {
+                heading: Emp Name
+            }
+            layout {
+                sequence: 2
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: B
+            }
+        )
+
+        column FROM_DATE (
+            type: plainText
+            heading {
+                heading: From Date
+            }
+            layout {
+                sequence: 4
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: D
+            }
+        )
+
+        column MANAGER_REMARK (
+            type: plainText
+            heading {
+                heading: Manager Remark
+            }
+            layout {
+                sequence: 9
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: I
+            }
+        )
+
+        column REASON (
+            type: plainText
+            heading {
+                heading: Reason
+            }
+            layout {
+                sequence: 7
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: G
+            }
+        )
+
+        column REQUEST_ID (
+            type: hidden
+            heading {
+                heading: Request Id
+            }
+            layout {
+                sequence: 1
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: A
+            }
+        )
+
+        column STATUS (
+            type: plainText
+            heading {
+                heading: Status
+            }
+            layout {
+                sequence: 8
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: H
+            }
+        )
+
+        column TOTAL_DAYS (
+            type: plainText
+            heading {
+                heading: Total Days
+                alignment: end
+            }
+            layout {
+                sequence: 6
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: F
+            }
+        )
+
+        column TO_DATE (
+            type: plainText
+            heading {
+                heading: To Date
+            }
+            layout {
+                sequence: 5
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: E
+            }
+        )
+
+        column TYPE_NAME (
+            type: plainText
+            heading {
+                heading: Type Name
+            }
+            layout {
+                sequence: 3
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: C
+            }
+        )
+
+        page {
+            borderWidth: 0.5
+            borderColor: #666666
+        }
+
+        savedReport primary (
+            visibility: primaryDefault
+            view {
+                rowsPerPage: 50
+            }
+
+            displayColumn CREATED_DATE (
+                sequence: 10
+            )
+
+            displayColumn EMP_NAME (
+                sequence: 2
+            )
+
+            displayColumn FROM_DATE (
+                sequence: 4
+            )
+
+            displayColumn MANAGER_REMARK (
+                sequence: 9
+            )
+
+            displayColumn REASON (
+                sequence: 7
+            )
+
+            displayColumn REQUEST_ID (
+                sequence: 1
+            )
+
+            displayColumn STATUS (
+                sequence: 8
+            )
+
+            displayColumn TOTAL_DAYS (
+                sequence: 6
+            )
+
+            displayColumn TO_DATE (
+                sequence: 5
+            )
+
+            displayColumn TYPE_NAME (
+                sequence: 3
+            )
+
+        )
+
+    )
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+)
+

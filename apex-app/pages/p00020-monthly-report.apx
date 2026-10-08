@@ -1,0 +1,204 @@
+page 20 (
+    name: Monthly Report
+    alias: MONTHLY-REPORT
+    title: Monthly Report
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region monthly-report (
+        name: Monthly Report
+        type: interactiveReport
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                SELECT TO_CHAR(lr.FROM_DATE, 'Mon YYYY') AS LEAVE_MONTH,
+                       COUNT(*) AS TOTAL_REQUESTS,
+                       SUM(CASE WHEN lr.STATUS = 'APPROVED' THEN 1 ELSE 0 END) AS APPROVED,
+                       SUM(CASE WHEN lr.STATUS = 'PENDING' THEN 1 ELSE 0 END) AS PENDING,
+                       SUM(CASE WHEN lr.STATUS = 'REJECTED' THEN 1 ELSE 0 END) AS REJECTED
+                FROM   LEAVE_REQUESTS lr
+                GROUP BY TO_CHAR(lr.FROM_DATE, 'Mon YYYY'), TO_CHAR(lr.FROM_DATE, 'YYYYMM')
+                ORDER BY TO_CHAR(lr.FROM_DATE, 'YYYYMM')
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/interactive-report
+            templateOptions: [
+                #DEFAULT#
+                t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        pagination {
+            type: rowRangesXToY
+        }
+        messages {
+            whenNoDataFound: No data found.
+            whenMoreDataFound: The maximum row count for this report is #MAX_ROW_COUNT# rows.  Please apply a filter to reduce the number of records in your query.
+        }
+        download {
+            formats: [
+                csv
+                excel
+                pdf
+            ]
+        }
+        advanced {
+            savedReportMappingIdentifier: 33947437718466476735
+        }
+
+        column APPROVED (
+            type: plainText
+            heading {
+                heading: Approved
+                alignment: end
+            }
+            layout {
+                sequence: 3
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: C
+            }
+        )
+
+        column LEAVE_MONTH (
+            type: plainText
+            heading {
+                heading: Leave Month
+            }
+            layout {
+                sequence: 1
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: A
+            }
+        )
+
+        column PENDING (
+            type: plainText
+            heading {
+                heading: Pending
+                alignment: end
+            }
+            layout {
+                sequence: 4
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: D
+            }
+        )
+
+        column REJECTED (
+            type: plainText
+            heading {
+                heading: Rejected
+                alignment: end
+            }
+            layout {
+                sequence: 5
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: E
+            }
+        )
+
+        column TOTAL_REQUESTS (
+            type: plainText
+            heading {
+                heading: Total Requests
+                alignment: end
+            }
+            layout {
+                sequence: 2
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: B
+            }
+        )
+
+        page {
+            borderWidth: 0.5
+            borderColor: #666666
+        }
+
+        savedReport primary (
+            visibility: primaryDefault
+            view {
+                rowsPerPage: 50
+            }
+
+            displayColumn APPROVED (
+                sequence: 3
+            )
+
+            displayColumn LEAVE_MONTH (
+                sequence: 1
+            )
+
+            displayColumn PENDING (
+                sequence: 4
+            )
+
+            displayColumn REJECTED (
+                sequence: 5
+            )
+
+            displayColumn TOTAL_REQUESTS (
+                sequence: 2
+            )
+
+        )
+
+    )
+
+)
+

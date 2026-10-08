@@ -1,0 +1,64 @@
+app EMPLOYEE-LEAVE-MANAGEMENT-SYSTEM (
+    name: Employee Leave Management System
+    logo {
+        type: text
+        text: Employee Leave Management System
+    }
+    navigation {
+        homeUrl: {
+            page: 1
+        }
+        loginUrl: {
+            page: LOGIN
+        }
+    }
+    navigationMenu {
+        listTemplate: @/side-navigation-menu
+        templateOptions: [
+            #DEFAULT#
+            js-defaultCollapsed
+            js-navCollapsed--hidden
+            t-TreeNav--styleA
+        ]
+        list: @navigation-menu
+    }
+    navigationBar {
+        list: @navigation-bar
+        listTemplate: @/navigation-bar
+        templateOptions: #DEFAULT#
+    }
+    userInterface {
+        currentTheme: @universal-theme
+        globalPage: 0
+        addBuiltWithApexToFooter: false
+    }
+    appFormatMasks {
+        date: DS
+        dateTime: DD-MM-YYYY
+        timestamp: DS
+        timestampTimeZone: DS
+    }
+    css {
+        fileUrls: #APP_FILES#custom-theme.css
+    }
+    authentication {
+        scheme: @custom-authentication
+    }
+    globalization {
+        translationMethod: textMessages
+    }
+    reportPrinting {
+        type: useInstanceSettings
+    }
+    runtime {
+        allowFeedback: true
+    }
+
+    substitution APP_NAME (
+        value {
+            staticValue: Employee Leave Management System
+        }
+    )
+
+)
+

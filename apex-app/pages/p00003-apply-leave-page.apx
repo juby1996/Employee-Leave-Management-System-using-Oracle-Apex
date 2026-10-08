@@ -1,0 +1,573 @@
+page 3 (
+    name: Apply Leave Page
+    alias: APPLY-LEAVE-PAGE
+    title: Apply Leave Page
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    security {
+        pageAccessProtection: unrestricted
+    }
+
+    region apply-leave-page_1 (
+        name: " Apply_Leave_Page"
+        title: " Apply Leave "
+        type: staticContent
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--scrollBody
+            ]
+        }
+    )
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    pageItem P3_BALANCE_DISPLAY (
+        type: displayOnly
+        label {
+            label: Balance Display
+            alignment: left
+        }
+        layout {
+            sequence: 40
+            region: @apply-leave-page_1
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    pageItem P3_BALANCE_NUM (
+        type: hidden
+        layout {
+            sequence: 30
+            region: @apply-leave-page_1
+            slot: regionBody
+        }
+    )
+
+    pageItem P3_EMP_NAME (
+        type: selectList
+        label {
+            label: Employee Name
+            alignment: left
+        }
+        lov {
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                SELECT EMP_NAME AS d, EMP_ID AS r
+                FROM EMPLOYEES
+                WHERE UPPER(STATUS) = 'ACTIVE'
+                  AND (
+                      GET_CURRENT_USER_ROLE() IN ('MANAGER','HR','ADMIN')
+                      OR EMP_ID = GET_CURRENT_EMP_ID()
+                  )
+                ```
+        }
+        layout {
+            sequence: 10
+            region: @apply-leave-page_1
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            height: 1
+        }
+        default {
+            type: expression
+            plsqlExpression: GET_CURRENT_EMP_ID()
+        }
+    )
+
+    pageItem P3_FROM_DATE (
+        type: datePicker
+        label {
+            label: From Date
+            alignment: left
+        }
+        layout {
+            sequence: 50
+            region: @apply-leave-page_1
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            formatMask: DD-MM-YYYY
+            width: 30
+        }
+        validation {
+            valueRequired: true
+        }
+    )
+
+    pageItem P3_LEAVE_TYPE (
+        type: selectList
+        label {
+            label: Leave Type
+            alignment: left
+        }
+        lov {
+            type: sharedComponent
+            lov: @leave-type-lov
+        }
+        layout {
+            sequence: 20
+            region: @apply-leave-page_1
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            height: 1
+        }
+        validation {
+            valueRequired: true
+        }
+    )
+
+    pageItem P3_REASON (
+        type: textarea
+        label {
+            label: Reason
+            alignment: left
+        }
+        layout {
+            sequence: 70
+            region: @apply-leave-page_1
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            width: 30
+            height: 5
+        }
+        validation {
+            valueRequired: true
+        }
+    )
+
+    pageItem P3_TO_DATE (
+        type: datePicker
+        label {
+            label: To Date
+            alignment: left
+        }
+        layout {
+            sequence: 60
+            region: @apply-leave-page_1
+            slot: regionBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            formatMask: DD-MM-YYYY
+            width: 30
+        }
+        validation {
+            valueRequired: true
+        }
+    )
+
+    button cancel (
+        buttonName: Cancel
+        label: CANCEL
+        layout {
+            sequence: 50
+            region: @apply-leave-page_1
+            slot: belowBox
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: [
+                #DEFAULT#
+                t-Button--danger
+            ]
+        }
+        behavior {
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    button check-balance-ajax (
+        buttonName: CHECK_BALANCE_AJAX
+        label: Check Balance (AJAX Test)
+        layout {
+            sequence: 80
+            region: @apply-leave-page_1
+            slot: regionBody
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: definedByDynamicAction
+        }
+    )
+
+    button submit (
+        buttonName: Submit
+        label: Submit Leave Request
+        layout {
+            sequence: 60
+            region: @apply-leave-page_1
+            slot: belowBox
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: [
+                #DEFAULT#
+                t-Button--primary
+            ]
+        }
+        behavior {
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    dynamicAction call-ajax-callback (
+        name: Call Ajax Callback
+        execution {
+            sequence: 30
+        }
+        when {
+            event: click
+            selectionType: button
+            button: @check-balance-ajax
+        }
+
+        action native-javascript-code (
+            action: executeJsCode
+            settings {
+                jsCode:
+                    ```javascript-browser
+                    apex.server.process(
+                        "GET_BALANCE_AJAX",
+                        {
+                            x01: $v("P3_EMP_NAME"),
+                            x02: $v("P3_LEAVE_TYPE")
+                        },
+                        {
+                            success: function(data) {
+                                alert("Balance from AJAX callback: " + data.balance + " days");
+                            },
+                            error: function(request) {
+                                alert("Error calling AJAX process: " + request.responseText);
+                            }
+                        }
+                    );
+                    ```
+            }
+            execution {
+                sequence: 10
+                fireOnInit: false
+            }
+        )
+
+    )
+
+    dynamicAction custom-success-toast (
+        name: Custom Success Toast
+        execution {
+            sequence: 50
+        }
+        when {
+            event: ready
+        }
+
+        action native-javascript-code (
+            action: executeJsCode
+            settings {
+                jsCode:
+                    ```javascript-browser
+                    if ($(".t-Alert--success, .a-Notification--success, .t-Message--success").length > 0) {
+                        var toast = $('<div></div>')
+                            .text('Leave request submitted successfully!')
+                            .css({
+                                position: 'fixed',
+                                bottom: '20px',
+                                right: '20px',
+                                background: '#2e7d32',
+                                color: '#fff',
+                                padding: '15px 25px',
+                                borderRadius: '8px',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                                zIndex: 9999,
+                                fontSize: '14px',
+                                fontFamily: 'sans-serif'
+                            })
+                            .appendTo('body');
+                    
+                        setTimeout(function() {
+                            toast.fadeOut(500, function() {
+                                toast.remove();
+                            });
+                        }, 3000);
+                    }
+                    ```
+            }
+            execution {
+                sequence: 10
+            }
+        )
+
+    )
+
+    dynamicAction new (
+        name: "make_reason_mandatory "
+        execution {
+            sequence: 10
+        }
+        when {
+            selectionType: items
+            items: P3_REASON
+        }
+        clientSideCondition {
+            type: item=value
+            item: P3_REASON
+            value: Sick Leave
+        }
+
+        action make-reason-mandatory (
+            action: show
+            affectedElements {
+                selectionType: items
+                items: P3_REASON
+            }
+            execution {
+                sequence: 10
+            }
+            clientSideCondition {
+                type: item=value
+                item: P3_REASON
+                value: Sick Leave
+            }
+        )
+
+    )
+
+    dynamicAction show-remaining-balance (
+        name: Update Balance and Submit State
+        execution {
+            sequence: 20
+        }
+        when {
+            selectionType: items
+            items: [
+                P3_LEAVE_TYPE
+                P3_EMP_NAME
+            ]
+        }
+
+        action native-disable (
+            action: disable
+            affectedElements {
+                selectionType: button
+                button: @submit
+            }
+            execution {
+                sequence: 10
+            }
+            clientSideCondition {
+                type: item=value
+                item: P3_BALANCE_NUM
+                value: 0
+            }
+        )
+
+        action native-enable (
+            action: enable
+            affectedElements {
+                selectionType: button
+                button: @submit
+            }
+            execution {
+                sequence: 20
+            }
+            clientSideCondition {
+                type: item!=value
+                item: P3_BALANCE_NUM
+                value: 0
+            }
+        )
+
+        action native-show (
+            action: executeServerSideCode
+            settings {
+                plsqlCode:
+                    ```plsql
+                    DECLARE
+                        v_balance NUMBER;
+                    BEGIN
+                        IF :P3_EMP_NAME IS NOT NULL AND :P3_LEAVE_TYPE IS NOT NULL THEN
+                            v_balance := PKG_LEAVE.GET_LEAVE_BALANCE(:P3_EMP_NAME, :P3_LEAVE_TYPE);
+                            :P3_BALANCE_DISPLAY := 'Remaining balance: ' || v_balance || ' day(s)';
+                            :P3_BALANCE_NUM := v_balance;
+                        ELSE
+                            :P3_BALANCE_DISPLAY := NULL;
+                            :P3_BALANCE_NUM := NULL;
+                        END IF;
+                    END;
+                    ```
+                itemsToSubmit: [
+                    P3_EMP_NAME
+                    P3_LEAVE_TYPE
+                ]
+                itemsToReturn: [
+                    P3_BALANCE_DISPLAY
+                    P3_BALANCE_NUM
+                ]
+            }
+            execution {
+                sequence: 30
+                fireOnInit: false
+            }
+        )
+
+    )
+
+    validation new (
+        name: No Past Dates
+        execution {
+            sequence: 10
+        }
+        validation {
+            plsqlExpression: TO_DATE(:P3_FROM_DATE, 'DD-MM-YYYY') >=TRUNC(SYSDATE)
+        }
+        error {
+            errorMessage: Leave cannot start in the past.
+            associatedItem: @P3_FROM_DATE
+        }
+    )
+
+    validation no-overlapping-leave (
+        name: No Overlapping Leave
+        execution {
+            sequence: 20
+        }
+        validation {
+            type: functionBodyReturningBoolean
+            plsqlFunctionBody:
+                ```plsql
+                DECLARE
+                V_COUNT NUMBER;
+                BEGIN
+                SELECT COUNT(*) INTO V_COUNT FROM LEAVE_REQUESTS 
+                WHERE 
+                STATUS IN('PENDING','APPROVED')
+                AND TO_DATE(:P3_FROM_DATE, 'DD-MM-YYYY') <= TO_DATE
+                AND TO_DATE(:P3_TO_DATE,'DD-MM-YYYY') >= FROM_DATE
+                AND EMP_ID = :P3_EMP_NAME;
+                RETURN V_COUNT= 0;
+                END;
+                ```
+        }
+        error {
+            errorMessage: You already have a leave request that overlaps these dates.
+            associatedItem: @P3_FROM_DATE
+        }
+    )
+
+    process create-leave-request (
+        name: Create Leave Request
+        type: executeCode
+        source {
+            plsqlCode:
+                ```plsql
+                DECLARE
+                V_REQUEST_ID LEAVE_REQUESTS.REQUEST_ID%TYPE;
+                BEGIN
+                PKG_LEAVE.CREATE_LEAVE(
+                    p_emp_id  =>:P3_EMP_NAME,
+                    p_type_id =>:P3_LEAVE_TYPE,
+                    p_from_date =>TO_DATE(:P3_FROM_DATE, 'DD-MM-YYYY'),
+                    p_to_date =>TO_DATE(:P3_TO_DATE, 'DD-MM-YYYY'),
+                    p_reason =>:P3_REASON,
+                    p_request_id =>V_REQUEST_ID
+                );
+                END;
+                ```
+        }
+        execution {
+            sequence: 10
+        }
+        successMessage {
+            successMessage: Leave request submitted successfully.
+        }
+        advanced {
+            executionMappingIdentifier: 28281118418507541544
+        }
+    )
+
+    process get-balance-ajax (
+        name: GET_BALANCE_AJAX
+        type: executeCode
+        source {
+            plsqlCode:
+                ```plsql
+                DECLARE
+                    v_balance NUMBER;
+                BEGIN
+                    v_balance := PKG_LEAVE.GET_LEAVE_BALANCE(
+                        p_emp_id  => APEX_APPLICATION.G_X01,
+                        p_type_id => APEX_APPLICATION.G_X02
+                    );
+                    APEX_JSON.OPEN_OBJECT;
+                    APEX_JSON.WRITE('balance', v_balance);
+                    APEX_JSON.CLOSE_OBJECT;
+                END;
+                ```
+        }
+        execution {
+            sequence: 20
+            point: ajaxCallback
+        }
+        advanced {
+            executionMappingIdentifier: 34032551572107875805
+        }
+    )
+
+)
+

@@ -1,0 +1,384 @@
+page 7 (
+    name: External Employees
+    alias: EXTERNAL-EMPLOYEES
+    title: External Employees
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region external-employees (
+        name: External Employees
+        type: interactiveReport
+        source {
+            location: restSource
+            restSource: @jsonplaceholder-users
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/interactive-report
+            templateOptions: [
+                #DEFAULT#
+                t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        pagination {
+            type: rowRangesXToY
+        }
+        messages {
+            whenNoDataFound: No data found.
+            whenMoreDataFound: The maximum row count for this report is #MAX_ROW_COUNT# rows.  Please apply a filter to reduce the number of records in your query.
+        }
+        advanced {
+            savedReportMappingIdentifier: 42378404205946085202
+        }
+
+        column ADDRESS_CITY (
+            type: plainText
+            heading {
+                heading: Address City
+            }
+            layout {
+                sequence: 7
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: G
+            }
+        )
+
+        column ADDRESS_GEO_LAT (
+            type: plainText
+            heading {
+                heading: Address Geo Lat
+                alignment: end
+            }
+            layout {
+                sequence: 5
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: E
+            }
+        )
+
+        column ADDRESS_GEO_LNG (
+            type: plainText
+            heading {
+                heading: Address Geo Lng
+                alignment: end
+            }
+            layout {
+                sequence: 6
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: F
+            }
+        )
+
+        column ADDRESS_STREET (
+            type: plainText
+            heading {
+                heading: Address Street
+            }
+            layout {
+                sequence: 9
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: I
+            }
+        )
+
+        column ADDRESS_SUITE (
+            type: plainText
+            heading {
+                heading: Address Suite
+            }
+            layout {
+                sequence: 8
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: H
+            }
+        )
+
+        column ADDRESS_ZIPCODE (
+            type: plainText
+            heading {
+                heading: Address Zipcode
+            }
+            layout {
+                sequence: 10
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: J
+            }
+        )
+
+        column COMPANY_BS (
+            type: plainText
+            heading {
+                heading: Company Bs
+            }
+            layout {
+                sequence: 11
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: K
+            }
+        )
+
+        column COMPANY_CATCHPHRASE (
+            type: plainText
+            heading {
+                heading: Company Catchphrase
+            }
+            layout {
+                sequence: 13
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: M
+            }
+        )
+
+        column COMPANY_NAME (
+            type: plainText
+            heading {
+                heading: Company Name
+            }
+            layout {
+                sequence: 12
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: L
+            }
+        )
+
+        column EMAIL (
+            type: plainText
+            heading {
+                heading: Email
+            }
+            layout {
+                sequence: 3
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: C
+            }
+        )
+
+        column ID (
+            type: plainText
+            heading {
+                heading: Id
+                alignment: end
+            }
+            layout {
+                sequence: 1
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: A
+            }
+        )
+
+        column NAME (
+            type: plainText
+            heading {
+                heading: Name
+            }
+            layout {
+                sequence: 2
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: B
+            }
+        )
+
+        column PHONE (
+            type: plainText
+            heading {
+                heading: Phone
+            }
+            layout {
+                sequence: 4
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: D
+            }
+        )
+
+        column USERNAME (
+            type: plainText
+            heading {
+                heading: Username
+            }
+            layout {
+                sequence: 15
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: O
+            }
+        )
+
+        column WEBSITE (
+            type: plainText
+            heading {
+                heading: Website
+            }
+            layout {
+                sequence: 14
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: N
+            }
+        )
+
+        page {
+            borderWidth: 0.5
+            borderColor: #666666
+        }
+
+        savedReport primary (
+            visibility: primaryDefault
+            view {
+                rowsPerPage: 50
+            }
+
+            displayColumn ADDRESS_CITY (
+                sequence: 7
+            )
+
+            displayColumn ADDRESS_GEO_LAT (
+                sequence: 5
+            )
+
+            displayColumn ADDRESS_GEO_LNG (
+                sequence: 6
+            )
+
+            displayColumn ADDRESS_STREET (
+                sequence: 9
+            )
+
+            displayColumn ADDRESS_SUITE (
+                sequence: 8
+            )
+
+            displayColumn ADDRESS_ZIPCODE (
+                sequence: 10
+            )
+
+            displayColumn COMPANY_BS (
+                sequence: 11
+            )
+
+            displayColumn COMPANY_CATCHPHRASE (
+                sequence: 13
+            )
+
+            displayColumn COMPANY_NAME (
+                sequence: 12
+            )
+
+            displayColumn EMAIL (
+                sequence: 3
+            )
+
+            displayColumn ID (
+                sequence: 1
+            )
+
+            displayColumn NAME (
+                sequence: 2
+            )
+
+            displayColumn PHONE (
+                sequence: 4
+            )
+
+            displayColumn USERNAME (
+                sequence: 15
+            )
+
+            displayColumn WEBSITE (
+                sequence: 14
+            )
+
+        )
+
+    )
+
+)
+

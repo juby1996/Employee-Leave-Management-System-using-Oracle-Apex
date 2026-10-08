@@ -1,0 +1,329 @@
+list navigation-menu (
+    name: Navigation Menu
+
+    entry apply-leave-page (
+        label: Apply Leave Page
+        icon {
+            imageIconCssClasses: fa-file-o
+        }
+        layout {
+            sequence: 60
+        }
+        isCurrent {
+            type: pages
+            pages: 3
+        }
+        link {
+            target: {
+                page: 3
+            }
+        }
+    )
+
+    entry approved-leave-report (
+        label: Approved Leave Report
+        icon {
+            imageIconCssClasses: fa-table
+        }
+        layout {
+            sequence: 90
+            parentEntry: @reports
+        }
+        isCurrent {
+            type: pages
+            pages: 4
+        }
+        link {
+            target: {
+                page: 4
+            }
+        }
+        security {
+            authorizationScheme: @is-hr-or-admin-or-manager
+        }
+    )
+
+    entry department-summary (
+        label: Department Summary
+        icon {
+            imageIconCssClasses: fa-table
+        }
+        layout {
+            sequence: 120
+            parentEntry: @reports
+        }
+        isCurrent {
+            type: pages
+            pages: 15
+        }
+        link {
+            target: {
+                page: 15
+            }
+        }
+        security {
+            authorizationScheme: @is-hr-or-admin-or-manager
+        }
+    )
+
+    entry departments (
+        label: Departments
+        icon {
+            imageIconCssClasses: fa-table
+        }
+        layout {
+            sequence: 30
+        }
+        isCurrent {
+            type: pages
+            pages: [
+                5
+                6
+            ]
+        }
+        link {
+            target: {
+                page: 5
+            }
+        }
+        security {
+            authorizationScheme: @admin-only
+        }
+    )
+
+    entry employee-history (
+        label: Employee History
+        icon {
+            imageIconCssClasses: fa-table
+        }
+        layout {
+            sequence: 110
+            parentEntry: @reports
+        }
+        isCurrent {
+            type: pages
+            pages: 12
+        }
+        link {
+            target: {
+                page: 12
+            }
+        }
+        security {
+            authorizationScheme: @is-hr-or-admin-or-manager
+        }
+    )
+
+    entry employees (
+        label: Employees
+        icon {
+            imageIconCssClasses: fa-table-pointer
+        }
+        layout {
+            sequence: 40
+        }
+        isCurrent {
+            type: pages
+            pages: [
+                9
+                10
+            ]
+        }
+        link {
+            target: {
+                page: 9
+            }
+        }
+    )
+
+    entry external-employees (
+        label: External Employees
+        icon {
+            imageIconCssClasses: fa-table
+        }
+        layout {
+            sequence: 150
+        }
+        isCurrent {
+            type: pages
+            pages: 7
+        }
+        link {
+            target: {
+                page: 7
+            }
+        }
+        security {
+            authorizationScheme: @is-hr-or-admin-or-manager
+        }
+    )
+
+    entry home (
+        label: Home
+        icon {
+            imageIconCssClasses: fa-home
+        }
+        layout {
+            sequence: 10
+        }
+        link {
+            target: {
+                page: 1
+            }
+        }
+        security {
+            authorizationScheme: @admin-only
+        }
+    )
+
+    entry hr-employee-update (
+        label: HR Employee Update
+        icon {
+            imageIconCssClasses: fa-table-pointer
+        }
+        layout {
+            sequence: 140
+        }
+        isCurrent {
+            type: pages
+            pages: 22
+        }
+        link {
+            target: {
+                page: 22
+            }
+        }
+        security {
+            authorizationScheme: @is-hr-or-admin
+        }
+    )
+
+    entry leave-approvals (
+        label: Leave Approvals
+        icon {
+            imageIconCssClasses: fa-table
+        }
+        layout {
+            sequence: 70
+        }
+        isCurrent {
+            type: pages
+            pages: 14
+        }
+        link {
+            target: {
+                page: 14
+            }
+        }
+        security {
+            authorizationScheme: @can-approve-leave
+        }
+    )
+
+    entry leave-chart (
+        label: Leave Chart
+        icon {
+            imageIconCssClasses: fa-area-chart
+        }
+        layout {
+            sequence: 20
+        }
+        isCurrent {
+            type: pages
+            pages: 2
+        }
+        link {
+            target: {
+                page: 2
+            }
+        }
+        security {
+            authorizationScheme: @is-hr-or-admin-or-manager
+        }
+    )
+
+    entry leave-types (
+        label: Leave Types
+        icon {
+            imageIconCssClasses: fa-table
+        }
+        layout {
+            sequence: 50
+        }
+        isCurrent {
+            type: pages
+            pages: [
+                17
+                18
+            ]
+        }
+        link {
+            target: {
+                page: 17
+            }
+        }
+        security {
+            authorizationScheme: @admin-only
+        }
+    )
+
+    entry monthly-report (
+        label: Monthly Report
+        icon {
+            imageIconCssClasses: fa-table
+        }
+        layout {
+            sequence: 130
+            parentEntry: @reports
+        }
+        isCurrent {
+            type: pages
+            pages: 20
+        }
+        link {
+            target: {
+                page: 20
+            }
+        }
+        security {
+            authorizationScheme: @is-hr-or-admin-or-manager
+        }
+    )
+
+    entry rejected-reports (
+        label: Rejected Reports
+        icon {
+            imageIconCssClasses: fa-table
+        }
+        layout {
+            sequence: 100
+            parentEntry: @reports
+        }
+        isCurrent {
+            type: pages
+            pages: 8
+        }
+        link {
+            target: {
+                page: 8
+            }
+        }
+        security {
+            authorizationScheme: @is-hr-or-admin-or-manager
+        }
+    )
+
+    entry reports (
+        label: Reports
+        layout {
+            sequence: 80
+        }
+        link {
+            target: {
+                page: 4
+            }
+        }
+    )
+
+)
+

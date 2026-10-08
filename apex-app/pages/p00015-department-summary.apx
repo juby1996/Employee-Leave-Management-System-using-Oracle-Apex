@@ -1,0 +1,199 @@
+page 15 (
+    name: Department Summary
+    alias: DEPARTMENT-SUMMARY
+    title: Department Summary
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region department-summary (
+        name: Department Summary
+        type: interactiveReport
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                SELECT d.DEPT_NAME,
+                       COUNT(lr.REQUEST_ID) AS TOTAL_REQUESTS,
+                       SUM(CASE WHEN lr.STATUS = 'APPROVED' THEN 1 ELSE 0 END) AS APPROVED,
+                       SUM(CASE WHEN lr.STATUS = 'PENDING' THEN 1 ELSE 0 END) AS PENDING,
+                       SUM(CASE WHEN lr.STATUS = 'REJECTED' THEN 1 ELSE 0 END) AS REJECTED
+                FROM   DEPARTMENTS d
+                LEFT JOIN EMPLOYEES e ON e.DEPT_ID = d.DEPT_ID
+                LEFT JOIN LEAVE_REQUESTS lr ON lr.EMP_ID = e.EMP_ID
+                GROUP BY d.DEPT_NAME
+                ORDER BY d.DEPT_NAME
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/interactive-report
+            templateOptions: [
+                #DEFAULT#
+                t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        pagination {
+            type: rowRangesXToY
+        }
+        messages {
+            whenNoDataFound: No data found.
+            whenMoreDataFound: The maximum row count for this report is #MAX_ROW_COUNT# rows.  Please apply a filter to reduce the number of records in your query.
+        }
+        advanced {
+            savedReportMappingIdentifier: 33651570050966635221
+        }
+
+        column APPROVED (
+            type: plainText
+            heading {
+                heading: Approved
+                alignment: end
+            }
+            layout {
+                sequence: 3
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: C
+            }
+        )
+
+        column DEPT_NAME (
+            type: plainText
+            heading {
+                heading: Dept Name
+            }
+            layout {
+                sequence: 1
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: A
+            }
+        )
+
+        column PENDING (
+            type: plainText
+            heading {
+                heading: Pending
+                alignment: end
+            }
+            layout {
+                sequence: 4
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: D
+            }
+        )
+
+        column REJECTED (
+            type: plainText
+            heading {
+                heading: Rejected
+                alignment: end
+            }
+            layout {
+                sequence: 5
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: E
+            }
+        )
+
+        column TOTAL_REQUESTS (
+            type: plainText
+            heading {
+                heading: Total Requests
+                alignment: end
+            }
+            layout {
+                sequence: 2
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: B
+            }
+        )
+
+        page {
+            borderWidth: 0.5
+            borderColor: #666666
+        }
+
+        savedReport primary (
+            visibility: primaryDefault
+            view {
+                rowsPerPage: 50
+            }
+
+            displayColumn APPROVED (
+                sequence: 3
+            )
+
+            displayColumn DEPT_NAME (
+                sequence: 1
+            )
+
+            displayColumn PENDING (
+                sequence: 4
+            )
+
+            displayColumn REJECTED (
+                sequence: 5
+            )
+
+            displayColumn TOTAL_REQUESTS (
+                sequence: 2
+            )
+
+        )
+
+    )
+
+)
+

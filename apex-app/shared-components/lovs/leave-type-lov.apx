@@ -1,0 +1,12 @@
+lov leave-type-lov (
+    name: LEAVE TYPE LOV
+    source {
+        tableName: LEAVE_TYPES
+    }
+    columnMapping {
+        return: TYPE_ID
+        display: TYPE_NAME
+        defaultSort: TYPE_NAME
+    }
+)
+

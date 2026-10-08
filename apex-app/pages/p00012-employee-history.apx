@@ -1,0 +1,268 @@
+page 12 (
+    name: Employee History
+    alias: EMPLOYEE-HISTORY
+    title: Employee History
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region employee-history (
+        name: Employee History
+        type: interactiveReport
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                SELECT e.EMP_NAME, lt.TYPE_NAME,
+                       TO_CHAR(lr.FROM_DATE,'DD-MM-YYYY') AS FROM_DATE,
+                       TO_CHAR(lr.TO_DATE,'DD-MM-YYYY') AS TO_DATE,
+                       lr.TOTAL_DAYS, lr.STATUS, lr.REASON, lr.MANAGER_REMARK,
+                       TO_CHAR(lr.CREATED_DATE,'DD-MM-YYYY') AS CREATED_DATE
+                FROM   LEAVE_REQUESTS lr
+                JOIN   EMPLOYEES e ON e.EMP_ID = lr.EMP_ID
+                JOIN   LEAVE_TYPES lt ON lt.TYPE_ID = lr.TYPE_ID
+                ORDER BY e.EMP_NAME, lr.FROM_DATE DESC
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/interactive-report
+            templateOptions: [
+                #DEFAULT#
+                t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        pagination {
+            type: rowRangesXToY
+        }
+        messages {
+            whenNoDataFound: No data found.
+            whenMoreDataFound: The maximum row count for this report is #MAX_ROW_COUNT# rows.  Please apply a filter to reduce the number of records in your query.
+        }
+        advanced {
+            savedReportMappingIdentifier: 33649860559661549023
+        }
+
+        column CREATED_DATE (
+            type: plainText
+            heading {
+                heading: Created Date
+            }
+            layout {
+                sequence: 18
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: I
+            }
+        )
+
+        column EMP_NAME (
+            type: plainText
+            heading {
+                heading: Emp Name
+            }
+            layout {
+                sequence: 1
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: A
+            }
+        )
+
+        column FROM_DATE (
+            type: plainText
+            heading {
+                heading: From Date
+            }
+            layout {
+                sequence: 3
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: C
+            }
+        )
+
+        column MANAGER_REMARK (
+            type: plainText
+            heading {
+                heading: Manager Remark
+            }
+            layout {
+                sequence: 8
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: H
+            }
+        )
+
+        column REASON (
+            type: plainText
+            heading {
+                heading: Reason
+            }
+            layout {
+                sequence: 7
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: G
+            }
+        )
+
+        column STATUS (
+            type: plainText
+            heading {
+                heading: Status
+            }
+            layout {
+                sequence: 6
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: F
+            }
+        )
+
+        column TOTAL_DAYS (
+            type: plainText
+            heading {
+                heading: Total Days
+                alignment: end
+            }
+            layout {
+                sequence: 5
+                columnAlignment: end
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: E
+            }
+        )
+
+        column TO_DATE (
+            type: plainText
+            heading {
+                heading: To Date
+            }
+            layout {
+                sequence: 4
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: D
+            }
+        )
+
+        column TYPE_NAME (
+            type: plainText
+            heading {
+                heading: Type Name
+            }
+            layout {
+                sequence: 2
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: B
+            }
+        )
+
+        page {
+            borderWidth: 0.5
+            borderColor: #666666
+        }
+
+        savedReport primary (
+            visibility: primaryDefault
+            view {
+                rowsPerPage: 50
+            }
+
+            displayColumn EMP_NAME (
+                sequence: 1
+            )
+
+            displayColumn FROM_DATE (
+                sequence: 3
+            )
+
+            displayColumn MANAGER_REMARK (
+                sequence: 8
+            )
+
+            displayColumn REASON (
+                sequence: 7
+            )
+
+            displayColumn STATUS (
+                sequence: 6
+            )
+
+            displayColumn TOTAL_DAYS (
+                sequence: 5
+            )
+
+            displayColumn TO_DATE (
+                sequence: 4
+            )
+
+            displayColumn TYPE_NAME (
+                sequence: 2
+            )
+
+        )
+
+    )
+
+)
+

@@ -1,0 +1,34 @@
+authentication custom-authentication (
+    name: Custom Authentication
+    type: custom
+    settings {
+        authFunctionName: cust_validate_login
+    }
+    source {
+        plsqlCode:
+            ```plsql
+            function cust_validate_login(p_username in varchar2,p_password in varchar2) 
+            return boolean
+            AS
+            
+            l_user_id Number;
+            BEGIN
+            select
+            user_id into l_user_id from APP_USER 
+            where UPPER(user_name)=UPPER(p_username) and UPPER(pwd) = UPPER(p_password);
+            
+            APEX_UTIL.SET_SESSION_STATE (p_name=>'G_USER_ID',p_value=>l_user_id);
+            return true;
+            Exception when no_data_found then
+            return false;
+            end cust_validate_login;
+            
+            ```
+    }
+)
+
+authentication oracle-apex-accounts (
+    name: Oracle APEX Accounts
+    type: oracleApexAccounts
+)
+

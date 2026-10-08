@@ -1,0 +1,233 @@
+restDataSource jsonplaceholder-users (
+    name: JSONPlaceholder Users
+    source {
+        type: http
+        remoteServer: @jsonplaceholder-typicode-com
+        urlPathPrefix: /users
+    }
+
+    operation get (
+        label: GET
+        operation {
+            urlPattern: .
+            httpMethod: get
+            databaseOperation: fetchRows
+        }
+    )
+
+    dataProfile {
+        name: JSONPlaceholder Users
+    }
+
+    dataProfileColumn address-city (
+        columnName: ADDRESS_CITY
+        source {
+            sequence: 7
+            dataType: varchar2
+        }
+        parsing {
+            pathExpression: address.city
+        }
+        advanced {
+            sourceDataType: string
+        }
+    )
+
+    dataProfileColumn address-geo-lat (
+        columnName: ADDRESS_GEO_LAT
+        source {
+            sequence: 5
+            dataType: number
+        }
+        parsing {
+            pathExpression: address.geo.lat
+        }
+        advanced {
+            sourceDataType: string
+        }
+    )
+
+    dataProfileColumn address-geo-lng (
+        columnName: ADDRESS_GEO_LNG
+        source {
+            sequence: 6
+            dataType: number
+        }
+        parsing {
+            pathExpression: address.geo.lng
+        }
+        advanced {
+            sourceDataType: string
+        }
+    )
+
+    dataProfileColumn address-street (
+        columnName: ADDRESS_STREET
+        source {
+            sequence: 9
+            dataType: varchar2
+        }
+        parsing {
+            pathExpression: address.street
+        }
+        advanced {
+            sourceDataType: string
+        }
+    )
+
+    dataProfileColumn address-suite (
+        columnName: ADDRESS_SUITE
+        source {
+            sequence: 8
+            dataType: varchar2
+        }
+        parsing {
+            pathExpression: address.suite
+        }
+        advanced {
+            sourceDataType: string
+        }
+    )
+
+    dataProfileColumn address-zipcode (
+        columnName: ADDRESS_ZIPCODE
+        source {
+            sequence: 10
+            dataType: varchar2
+        }
+        parsing {
+            pathExpression: address.zipcode
+        }
+        advanced {
+            sourceDataType: string
+        }
+    )
+
+    dataProfileColumn company-bs (
+        columnName: COMPANY_BS
+        source {
+            sequence: 11
+            dataType: varchar2
+        }
+        parsing {
+            pathExpression: company.bs
+        }
+        advanced {
+            sourceDataType: string
+        }
+    )
+
+    dataProfileColumn company-catchphrase (
+        columnName: COMPANY_CATCHPHRASE
+        source {
+            sequence: 13
+            dataType: varchar2
+        }
+        parsing {
+            pathExpression: company.catchPhrase
+        }
+        advanced {
+            sourceDataType: string
+        }
+    )
+
+    dataProfileColumn company-name (
+        columnName: COMPANY_NAME
+        source {
+            sequence: 12
+            dataType: varchar2
+        }
+        parsing {
+            pathExpression: company.name
+        }
+        advanced {
+            sourceDataType: string
+        }
+    )
+
+    dataProfileColumn email (
+        columnName: EMAIL
+        source {
+            sequence: 3
+            dataType: varchar2
+        }
+        parsing {
+            pathExpression: email
+        }
+        advanced {
+            sourceDataType: string
+        }
+    )
+
+    dataProfileColumn id (
+        columnName: ID
+        source {
+            sequence: 1
+            dataType: number
+        }
+        parsing {
+            pathExpression: id
+        }
+        advanced {
+            sourceDataType: number
+        }
+    )
+
+    dataProfileColumn name (
+        columnName: NAME
+        source {
+            sequence: 2
+            dataType: varchar2
+        }
+        parsing {
+            pathExpression: name
+        }
+        advanced {
+            sourceDataType: string
+        }
+    )
+
+    dataProfileColumn phone (
+        columnName: PHONE
+        source {
+            sequence: 4
+            dataType: varchar2
+        }
+        parsing {
+            pathExpression: phone
+        }
+        advanced {
+            sourceDataType: string
+        }
+    )
+
+    dataProfileColumn username (
+        columnName: USERNAME
+        source {
+            sequence: 15
+            dataType: varchar2
+        }
+        parsing {
+            pathExpression: username
+        }
+        advanced {
+            sourceDataType: string
+        }
+    )
+
+    dataProfileColumn website (
+        columnName: WEBSITE
+        source {
+            sequence: 14
+            dataType: varchar2
+        }
+        parsing {
+            pathExpression: website
+        }
+        advanced {
+            sourceDataType: string
+        }
+    )
+
+)
+

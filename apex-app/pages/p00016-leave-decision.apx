@@ -1,0 +1,156 @@
+page 16 (
+    name: Leave Decision
+    alias: LEAVE-DECISION
+    title: Leave Decision
+    appearance {
+        pageMode: modalDialog
+        dialogTemplate: @/modal-dialog
+        templateOptions: #DEFAULT#
+    }
+
+    region new (
+        name: New
+        type: staticContent
+        layout {
+            sequence: 10
+            slot: dialogFooter
+        }
+        appearance {
+            template: @/blank-with-attributes-no-grid
+            templateOptions: [
+                #DEFAULT#
+                t-Form--standardPadding
+                t-Region-orderBy--center
+            ]
+            renderComponents: belowContent
+        }
+    )
+
+    pageItem P16_ACTION (
+        type: hidden
+        layout {
+            sequence: 20
+            slot: contentBody
+        }
+    )
+
+    pageItem P16_REMARK (
+        type: textarea
+        label {
+            label: Remark
+            alignment: left
+        }
+        layout {
+            sequence: 30
+            slot: contentBody
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            width: 30
+            height: 5
+        }
+    )
+
+    pageItem P16_REQUEST_ID (
+        type: hidden
+        layout {
+            sequence: 10
+            slot: contentBody
+        }
+        security {
+            sessionStateProtection: checksumRequiredAppLevel
+        }
+    )
+
+    button cancel (
+        buttonName: Cancel
+        label: Cancel
+        layout {
+            sequence: 10
+            region: @new
+            slot: regionBody
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: [
+                #DEFAULT#
+                t-Button--danger
+            ]
+        }
+        behavior {
+            action: redirectThisApp
+            target: {
+                page: 14
+            }
+        }
+    )
+
+    button confirm (
+        buttonName: Confirm
+        label: Confirm
+        layout {
+            sequence: 20
+            region: @new
+            slot: regionBody
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: [
+                #DEFAULT#
+                t-Button--primary
+            ]
+        }
+        behavior {
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    process close-dialog-and-refresh (
+        name: Close Dialog and Refresh
+        type: closeDialog
+        execution {
+            sequence: 20
+        }
+        advanced {
+            executionMappingIdentifier: 30627353222264689511
+        }
+    )
+
+    process process-leave-decision (
+        name: Process Leave Decision
+        type: executeCode
+        source {
+            plsqlCode:
+                ```plsql
+                BEGIN
+                    IF :P16_ACTION = 'Approve' THEN
+                        PKG_LEAVE.APPROVE_LEAVE(
+                            p_request_id => :P16_REQUEST_ID,
+                            p_manager_id => 2,  -- temporary fixed manager until Task 17 auth exists
+                            p_remark     => :P16_REMARK
+                        );
+                    ELSIF :P16_ACTION = 'Reject' THEN
+                        PKG_LEAVE.REJECT_LEAVE(
+                            p_request_id => :P16_REQUEST_ID,
+                            p_manager_id => 2,
+                            p_remark     => :P16_REMARK
+                        );
+                    END IF;
+                END;
+                ```
+        }
+        execution {
+            sequence: 10
+        }
+        successMessage {
+            successMessage: Leave request processed.
+        }
+        advanced {
+            executionMappingIdentifier: 30627353097651689509
+        }
+    )
+
+)
+

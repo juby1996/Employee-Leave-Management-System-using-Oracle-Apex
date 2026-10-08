@@ -1,0 +1,211 @@
+page 2 (
+    name: Leave Chart
+    alias: LEAVE-CHART
+    title: Leave Chart
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region leave-chart (
+        name: Leaves_per_Department
+        title: Leaves per Department
+        type: chart
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--scrollBody
+            ]
+        }
+        chartLayout {
+            height: 400
+        }
+        performance {
+            lazyLoading: true
+        }
+
+        series series-1 (
+            name: department_wise_count
+            execution {
+                sequence: 10
+            }
+            source {
+                type: sqlQuery
+                sqlQuery:
+                    ```sql
+                    SELECT d.DEPT_NAME as LABEL,count(lr.request_id) AS VALUE from departments d
+                     LEFT JOIN EMPLOYEES e ON e.dept_id=d.dept_id
+                     LEFT JOIN LEAVE_REQUESTS lr ON lr.emp_id = e.emp_id and lr.status='Approved' group by d.dept_name;
+                    ```
+            }
+            columnMapping {
+                label: LABEL
+                value: VALUE
+            }
+        )
+
+        axis x (
+            name: x
+        )
+
+        axis y (
+            name: y
+            value {
+                format: decimal
+                decimalPlaces: 0
+                formatScaling: none
+                step: 1
+            }
+            majorTicks {
+                minStep: 0
+            }
+        )
+
+    )
+
+    region leave-types (
+        name: Leave_Types
+        title: Leave Types
+        type: chart
+        layout {
+            sequence: 30
+            slot: body
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--scrollBody
+            ]
+        }
+        chart {
+            type: pie
+        }
+        chartLayout {
+            height: 400
+        }
+        performance {
+            lazyLoading: true
+        }
+        value {
+            format: decimal
+            decimalPlaces: 0
+            formatScaling: none
+        }
+
+        series new (
+            name: leave_type_count
+            execution {
+                sequence: 10
+            }
+            source {
+                type: sqlQuery
+                sqlQuery:
+                    ```sql
+                    SELECT lt.TYPE_NAME AS LABEL, COUNT(lr.REQUEST_ID) AS VALUE
+                    FROM LEAVE_TYPES lt
+                    LEFT JOIN LEAVE_REQUESTS lr ON lr.TYPE_ID = lt.TYPE_ID and lr.status='Approved'
+                    GROUP BY lt.TYPE_NAME
+                    ```
+            }
+            columnMapping {
+                label: LABEL
+                value: VALUE
+            }
+            label {
+                show: true
+            }
+        )
+
+    )
+
+    region monthly-leaves (
+        name: Monthly _Leaves
+        title: Monthly Leaves
+        type: chart
+        layout {
+            sequence: 20
+            slot: body
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--scrollBody
+            ]
+        }
+        chartLayout {
+            height: 400
+        }
+        performance {
+            lazyLoading: true
+        }
+
+        series new (
+            name: monthly_leave_count
+            execution {
+                sequence: 10
+            }
+            source {
+                type: sqlQuery
+                sqlQuery:
+                    ```sql
+                    SELECT TO_CHAR(FROM_DATE, 'Mon YYYY') AS LABEL, COUNT(*) AS VALUE
+                    FROM LEAVE_REQUESTS
+                    WHERE STATUS = 'Approved'
+                    GROUP BY TO_CHAR(FROM_DATE, 'Mon YYYY'), TO_CHAR(FROM_DATE, 'YYYYMM')
+                    ORDER BY TO_CHAR(FROM_DATE, 'YYYYMM')
+                    ```
+            }
+            columnMapping {
+                label: LABEL
+                value: VALUE
+            }
+        )
+
+        axis x (
+            name: x
+        )
+
+        axis y (
+            name: y
+            value {
+                format: decimal
+                decimalPlaces: 0
+                formatScaling: none
+                step: 1
+            }
+        )
+
+    )
+
+)
+

@@ -1,0 +1,69 @@
+page 1 (
+    name: Home
+    alias: HOME
+    title: Employee Leave Management System
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+
+    region dashboard (
+        name: Dashboard
+        type: cards
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                SELECT 'Total Employees' AS CARD_LABEL, COUNT(*) AS CARD_VALUE, 1 AS DISPLAY_ORDER FROM EMPLOYEES
+                UNION ALL
+                SELECT 'Pending Requests', COUNT(*), 2 FROM LEAVE_REQUESTS WHERE STATUS = 'Pending'
+                UNION ALL
+                SELECT 'Approved Requests', COUNT(*), 3 FROM LEAVE_REQUESTS WHERE STATUS = 'Approved'
+                UNION ALL
+                SELECT 'Rejected Requests', COUNT(*), 4 FROM LEAVE_REQUESTS WHERE STATUS = 'Rejected'
+                UNION ALL
+                SELECT 'Departments', COUNT(*), 5 FROM DEPARTMENTS
+                ORDER BY DISPLAY_ORDER
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/cards-container
+            templateOptions: [
+                #DEFAULT#
+                t-CardsRegion--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        security {
+            authorizationScheme: @is-hr-or-admin-or-manager
+        }
+        title {
+            column: CARD_LABEL
+        }
+        body {
+            column: CARD_VALUE
+        }
+    )
+
+    region employee-leave-management-system (
+        name: Employee Leave Management System
+        type: staticContent
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/hero
+            templateOptions: #DEFAULT#
+        }
+        image {
+            fileUrl: #APP_FILES#icons/app-icon-512.png
+        }
+    )
+
+)
+

@@ -1,0 +1,13 @@
+lov employee-lov (
+    name: EMPLOYEE LOV
+    source {
+        tableName: EMPLOYEES
+        whereClause: STATUS = 'ACTIVE'
+    }
+    columnMapping {
+        return: EMP_ID
+        display: EMP_NAME
+        defaultSort: EMP_NAME
+    }
+)
+

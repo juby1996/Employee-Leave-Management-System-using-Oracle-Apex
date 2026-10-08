@@ -1,0 +1,49 @@
+:root {
+    --company-primary: #1a5f7a;
+    --company-secondary: #2e86ab;
+    --company-accent: #57a773;
+    --company-bg-light: #f4f7f9;
+    --company-text: #2d2d2d;
+}
+
+.t-Button {
+    border-radius: 8px !important;
+}
+
+.t-Button--hot {
+    background-color: var(--company-primary) !important;
+    border-color: var(--company-primary) !important;
+}
+
+.t-Cards .t-Card {
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.t-Cards .t-Card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12) !important;
+}
+
+.t-Card-title {
+    color: var(--company-primary) !important;
+    font-weight: 600 !important;
+}
+
+@media (max-width: 768px) {
+    .t-Cards .t-Card {
+        margin-bottom: 16px;
+    }
+    .t-Region {
+        padding: 8px !important;
+    }
+}
+
+#t_Body_nav, .t-Header {
+    background-color: var(--company-primary) !important;
+}
+
+.t-TreeNav-label {
+    color: #ffffff !important;
+}

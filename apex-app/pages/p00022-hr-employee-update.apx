@@ -1,0 +1,443 @@
+page 22 (
+    name: HR Employee Update
+    alias: HR-EMPLOYEE-UPDATE
+    title: HR Employee Update
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region hr-employee-update (
+        name: HR Employee Update
+        type: interactiveGrid
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                SELECT e.ROWID,
+                       e.EMP_ID,
+                       e.EMP_NAME,
+                       e.EMAIL,
+                       e.PHONE,
+                       e.DEPT_ID,
+                       e.MANAGER_ID,
+                       (SELECT m.EMP_NAME FROM EMPLOYEES m WHERE m.EMP_ID = e.MANAGER_ID) AS MANAGER_NAME,
+                       e.JOIN_DATE,
+                       e.STATUS
+                FROM   EMPLOYEES e
+                ```
+        }
+        layout {
+            sequence: 20
+            slot: body
+        }
+        appearance {
+            template: @/interactive-report
+            templateOptions: [
+                #DEFAULT#
+                t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        edit {
+            enabled: true
+            allowedOperations: [
+                add
+                update
+                delete
+            ]
+        }
+        toolbar {
+            controls: [
+                searchCol
+                searchField
+                actionsMenu
+                resetButton
+                saveButton
+            ]
+        }
+        download {
+            formats: [
+                csv
+                html
+                excel
+                pdf
+            ]
+        }
+        advanced {
+            savedReportMappingIdentifier: 33953657525439591769
+        }
+
+        savedReport primary (
+            visibility: primary
+            view {
+                default: grid
+            }
+            singleRowView {
+                displayedColumns: true
+            }
+
+            displayColumn (
+                column: @EMP_ID
+                layout {
+                    sequence: 1
+                }
+            )
+
+            displayColumn (
+                column: @EMP_NAME
+                layout {
+                    sequence: 2
+                }
+            )
+
+            displayColumn (
+                column: @EMAIL
+                layout {
+                    sequence: 3
+                }
+            )
+
+            displayColumn (
+                column: @PHONE
+                layout {
+                    sequence: 4
+                }
+            )
+
+            displayColumn (
+                column: @DEPT_ID
+                layout {
+                    sequence: 5
+                }
+            )
+
+            displayColumn (
+                column: @JOIN_DATE
+                layout {
+                    sequence: 7
+                }
+            )
+
+            displayColumn (
+                column: @STATUS
+                layout {
+                    sequence: 8
+                }
+            )
+
+            displayColumn (
+                column: @APEX$ROW_ACTION
+                layout {
+                    sequence: 0
+                }
+            )
+
+            displayColumn (
+                column: @MANAGER_NAME
+                layout {
+                    sequence: 10
+                }
+            )
+
+            displayColumn (
+                column: @ROWID
+                layout {
+                    sequence: 11
+                }
+            )
+
+        )
+
+        column APEX$ROW_ACTION (
+            type: actionsMenu
+            layout {
+                sequence: 20
+            }
+        )
+
+        column APEX$ROW_SELECTOR (
+            type: rowSelector
+            layout {
+                sequence: 10
+            }
+        )
+
+        column DEPT_ID (
+            type: selectList
+            heading {
+                heading: Dept Id
+            }
+            lov {
+                type: sharedComponent
+                lov: @departments-dept-name
+                displayExtraValues: false
+                displayNullValue: false
+            }
+            layout {
+                sequence: 70
+            }
+            validation {
+                valueRequired: true
+            }
+            source {
+                databaseColumn: DEPT_ID
+                dataType: number
+            }
+            columnFilter {
+                performanceImpactingOperators: [
+                    contains
+                    startsWith
+                    caseInsensitive
+                    regexp
+                ]
+                lovType: none
+            }
+        )
+
+        column EMAIL (
+            type: displayOnly
+            heading {
+                heading: Email
+            }
+            layout {
+                sequence: 50
+            }
+            source {
+                databaseColumn: EMAIL
+                dataType: varchar2
+            }
+            columnFilter {
+                performanceImpactingOperators: [
+                    contains
+                    startsWith
+                    caseInsensitive
+                    regexp
+                ]
+            }
+        )
+
+        column EMP_ID (
+            type: hidden
+            layout {
+                sequence: 30
+            }
+            source {
+                databaseColumn: EMP_ID
+                dataType: number
+                queryOnly: true
+                primaryKey: true
+            }
+            exportPrinting {
+                includeInExportPrint: false
+            }
+        )
+
+        column EMP_NAME (
+            type: displayOnly
+            heading {
+                heading: Emp Name
+            }
+            layout {
+                sequence: 40
+            }
+            source {
+                databaseColumn: EMP_NAME
+                dataType: varchar2
+            }
+            columnFilter {
+                performanceImpactingOperators: [
+                    contains
+                    startsWith
+                    caseInsensitive
+                    regexp
+                ]
+            }
+        )
+
+        column JOIN_DATE (
+            type: displayOnly
+            heading {
+                heading: Join Date
+            }
+            layout {
+                sequence: 90
+            }
+            source {
+                databaseColumn: JOIN_DATE
+                dataType: date
+            }
+            columnFilter {
+                performanceImpactingOperators: [
+                    contains
+                    startsWith
+                    caseInsensitive
+                    regexp
+                ]
+            }
+        )
+
+        column MANAGER_NAME (
+            type: displayOnly
+            heading {
+                heading: Manager Name
+            }
+            lov {
+                type: sharedComponent
+                lov: @employee-lov
+                displayExtraValues: false
+            }
+            layout {
+                sequence: 110
+            }
+            source {
+                databaseColumn: MANAGER_NAME
+                dataType: varchar2
+                queryOnly: true
+            }
+            columnFilter {
+                performanceImpactingOperators: [
+                    contains
+                    startsWith
+                    caseInsensitive
+                    regexp
+                ]
+                lovType: useLov
+            }
+        )
+
+        column PHONE (
+            type: textField
+            heading {
+                heading: Phone
+            }
+            layout {
+                sequence: 60
+            }
+            validation {
+                valueRequired: true
+                maxLength: 30
+            }
+            source {
+                databaseColumn: PHONE
+                dataType: varchar2
+            }
+            columnFilter {
+                performanceImpactingOperators: [
+                    contains
+                    startsWith
+                    caseInsensitive
+                    regexp
+                ]
+            }
+        )
+
+        column ROWID (
+            type: hidden
+            layout {
+                sequence: 120
+            }
+            source {
+                databaseColumn: ROWID
+                dataType: rowid
+                primaryKey: true
+            }
+            exportPrinting {
+                includeInExportPrint: false
+            }
+            security {
+                authorizationScheme: @is-hr-or-admin
+            }
+        )
+
+        column STATUS (
+            type: selectList
+            heading {
+                heading: Status
+            }
+            lov {
+                type: staticValues
+                staticValues: STATIC:ACTIVE;ACTIVE,INACTIVE;INACTIVE
+                displayExtraValues: false
+                displayNullValue: false
+            }
+            layout {
+                sequence: 100
+            }
+            validation {
+                valueRequired: true
+            }
+            source {
+                databaseColumn: STATUS
+                dataType: varchar2
+            }
+            columnFilter {
+                performanceImpactingOperators: [
+                    contains
+                    startsWith
+                    caseInsensitive
+                    regexp
+                ]
+                lovType: useLov
+            }
+        )
+
+        page {
+            borderWidth: 0.5
+            borderColor: #666666
+        }
+    )
+
+    validation phone-validation (
+        name: phone_validation
+        execution {
+            sequence: 10
+        }
+        validation {
+            editableRegion: @hr-employee-update
+            type: columnMatchesRegexp
+            column: PHONE
+            regexp: "^[0-9]{10}$"
+        }
+        error {
+            errorMessage: Please enter a valid 10-digit phone number..
+        }
+    )
+
+    process hr-employee-update-save-interactive-grid-data (
+        name: HR Employee Update - Save Interactive Grid Data
+        type: interactiveGridAutoRowProcessing
+        editableRegion: @hr-employee-update
+        execution {
+            sequence: 10
+        }
+        advanced {
+            executionMappingIdentifier: 30627355445562689533
+        }
+    )
+
+)
+

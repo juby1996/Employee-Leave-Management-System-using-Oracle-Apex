@@ -1,0 +1,326 @@
+page 14 (
+    name: Leave Approvals
+    alias: LEAVE-APPROVALS
+    title: Leave Approvals
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: breadcrumbBar
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region leave-approvals (
+        name: Leave Approvals
+        type: interactiveReport
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery:
+                ```sql
+                SELECT lr.REQUEST_ID,
+                       e.EMP_NAME,
+                       lt.TYPE_NAME,
+                       TO_CHAR(lr.FROM_DATE,'DD-MM-YYYY') AS FROM_DATE,
+                       TO_CHAR(lr.TO_DATE,'DD-MM-YYYY') AS TO_DATE,
+                       lr.REASON,
+                       lr.STATUS,
+                       lr.REQUEST_ID AS APPROVE_LINK,
+                       lr.REQUEST_ID AS REJECT_LINK
+                FROM   LEAVE_REQUESTS lr
+                JOIN   EMPLOYEES e ON e.EMP_ID = lr.EMP_ID
+                JOIN   LEAVE_TYPES lt ON lt.TYPE_ID = lr.TYPE_ID
+                WHERE  lr.STATUS = 'PENDING'
+                ORDER BY lr.CREATED_DATE
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: body
+        }
+        appearance {
+            template: @/interactive-report
+            templateOptions: [
+                #DEFAULT#
+                t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        pagination {
+            type: rowRangesXToY
+        }
+        messages {
+            whenNoDataFound: No data found.
+            whenMoreDataFound: The maximum row count for this report is #MAX_ROW_COUNT# rows.  Please apply a filter to reduce the number of records in your query.
+        }
+        advanced {
+            savedReportMappingIdentifier: 30596058322511047832
+        }
+
+        column APPROVE_LINK (
+            type: link
+            heading {
+                heading: Approve
+                alignment: end
+            }
+            layout {
+                sequence: 17
+                columnAlignment: end
+            }
+            accessibility {
+                valueIdentifiesRow: true
+            }
+            link {
+                target: {
+                    page: 16
+                    items: {
+                        P16_REQUEST_ID: #APPROVE_LINK#
+                        P16_ACTION: Approve
+                    }
+                }
+                linkText: APPROVE_LINK
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: H
+            }
+            security {
+                authorizationScheme: @can-approve-leave
+            }
+        )
+
+        column EMP_NAME (
+            type: plainText
+            heading {
+                heading: Emp Name
+            }
+            layout {
+                sequence: 2
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: B
+            }
+        )
+
+        column FROM_DATE (
+            type: plainText
+            heading {
+                heading: From Date
+            }
+            layout {
+                sequence: 4
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: D
+            }
+        )
+
+        column REASON (
+            type: plainText
+            heading {
+                heading: Reason
+            }
+            layout {
+                sequence: 6
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: F
+            }
+        )
+
+        column REJECT_LINK (
+            type: link
+            heading {
+                heading: Reject
+                alignment: end
+            }
+            layout {
+                sequence: 27
+                columnAlignment: end
+            }
+            link {
+                target: {
+                    page: 16
+                    items: {
+                        P16_REQUEST_ID: #REJECT_LINK#
+                        P16_ACTION: Reject
+                    }
+                }
+                linkText: REJECT_LINK
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: I
+            }
+            security {
+                authorizationScheme: @can-approve-leave
+            }
+        )
+
+        column REQUEST_ID (
+            type: hidden
+            heading {
+                heading: Request Id
+            }
+            layout {
+                sequence: 1
+            }
+            source {
+                dataType: number
+            }
+            advanced {
+                endUserAlias: A
+            }
+        )
+
+        column STATUS (
+            type: plainText
+            heading {
+                heading: Status
+            }
+            layout {
+                sequence: 7
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: G
+            }
+        )
+
+        column TO_DATE (
+            type: plainText
+            heading {
+                heading: To Date
+            }
+            layout {
+                sequence: 5
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: E
+            }
+        )
+
+        column TYPE_NAME (
+            type: plainText
+            heading {
+                heading: Type Name
+            }
+            layout {
+                sequence: 3
+            }
+            source {
+                dataType: varchar2
+            }
+            advanced {
+                endUserAlias: C
+            }
+        )
+
+        page {
+            borderWidth: 0.5
+            borderColor: #666666
+        }
+
+        savedReport primary (
+            visibility: primaryDefault
+            view {
+                rowsPerPage: 50
+            }
+
+            displayColumn EMP_NAME (
+                sequence: 2
+            )
+
+            displayColumn FROM_DATE (
+                sequence: 4
+            )
+
+            displayColumn REASON (
+                sequence: 6
+            )
+
+            displayColumn REQUEST_ID (
+                sequence: 1
+            )
+
+            displayColumn STATUS (
+                sequence: 7
+            )
+
+            displayColumn TO_DATE (
+                sequence: 5
+            )
+
+            displayColumn TYPE_NAME (
+                sequence: 3
+            )
+
+        )
+
+    )
+
+    dynamicAction refresh-on-dialog-close (
+        name: Refresh on Dialog Close
+        execution {
+            sequence: 10
+        }
+        when {
+            event: apexafterclosedialog
+            selectionType: region
+            region: @leave-approvals
+        }
+
+        action refresh-report (
+            name: Refresh Report
+            action: refresh
+            affectedElements {
+                selectionType: region
+                region: @leave-approvals
+            }
+            execution {
+                sequence: 10
+                fireOnInit: false
+            }
+        )
+
+    )
+
+)
+
